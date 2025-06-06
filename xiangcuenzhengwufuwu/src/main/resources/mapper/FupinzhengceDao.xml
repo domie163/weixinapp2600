@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.FupinzhengceDao">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        a.id as id
+        ,a.fupinzhengce_name as fupinzhengceName
+        ,a.fupinzhengce_photo as fupinzhengcePhoto
+        ,a.fupinzhengce_fuli as fupinzhengceFuli
+        ,a.fupinzhengce_content as fupinzhengceContent
+        ,a.create_time as createTime
+    </sql>
+    <select id="selectListView" parameterType="map" resultType="com.entity.view.FupinzhengceView" >
+        SELECT
+        <include refid="Base_Column_List" />
+
+--         级联表的字段
+
+        FROM fupinzhengce  a
+
+        <where>
+            <if test="params.ids != null">
+                and a.id in
+                <foreach item="item" index="index" collection="params.ids" open="(" separator="," close=")">
+                #{item}
+                </foreach>
+            </if>
+            <if test=" params.fupinzhengceName != '' and params.fupinzhengceName != null and params.fupinzhengceName != 'null' ">
+                and a.fupinzhengce_name like CONCAT('%',#{params.fupinzhengceName},'%')
+            </if>
+            <if test=" params.fupinzhengceFuli != '' and params.fupinzhengceFuli != null and params.fupinzhengceFuli != 'null' ">
+                and a.fupinzhengce_fuli like CONCAT('%',#{params.fupinzhengceFuli},'%')
+            </if>
+            <if test=" params.fupinzhengceContent != '' and params.fupinzhengceContent != null and params.fupinzhengceContent != 'null' ">
+                and a.fupinzhengce_content like CONCAT('%',#{params.fupinzhengceContent},'%')
+            </if>
+
+        </where>
+
+        order by a.${params.orderBy} desc 
+    </select>
+
+</mapper>
